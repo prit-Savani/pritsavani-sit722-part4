@@ -1,0 +1,42 @@
+version: '3' # Define the version of Docker Compose to use
+services: # Define the services (microservices) for the application
+  book_catalog:  # The first service is 'book_catalog'
+    image: book_catalog:latest  # The Docker image to use for this service, tagged as 'latest'
+    build:  # Build the Docker image using the Dockerfile in the ./book_catalog directory
+      context: ./book_catalog # Path to the book_catalog service's directory
+      dockerfile: Dockerfile # The Dockerfile used to build this service
+      args:
+        - NO_CACHE=true # Argument to disable caching during the Docker build
+    container_name: book_catalog_cntr # Set the name of the running container for this service
+    ports: # Map port 8001 on the host to port 8001 on the container
+     - "8001:8001"
+    environment:  # Environment variables for the service
+      - PORT=8001 # Set the PORT environment variable used by the service
+       # Connection string for the PostgreSQL database hosted on Render
+      - DATABASE_URL=postgresql://sit722part4_5wil_user:oAzWDo67PUull6wC75TK38UBo17Np4dt@dpg-crnrcho8fa8c738jt4sg-a.oregon-postgres.render.com/sit722part4_5wil
+    # Restart policy for the container: 'no' means it will not automatically restart
+    restart: "no"
+
+# The second service is 'inventory_management'
+  inventory_management:
+  # The Docker image to use for this service, tagged as 'latest'
+    image: inventory_management:latest
+    # Build the Docker image using the Dockerfile in the ./inventory_management directory
+    build: 
+      context: ./inventory_management # Path to the inventory_management service's directory
+      dockerfile: Dockerfile # The Dockerfile used to build this service
+      args:
+        - NO_CACHE=true # Argument to disable caching during the Docker build
+
+        # Set the name of the running container for this service
+    container_name: inventory_management_cntr
+    # Map port 8002 on the host to port 8002 on the container
+    ports:
+     - "8002:8002"
+     # Environment variables for the service
+    environment:
+      - PORT=8002 # Set the PORT environment variable used by the service
+      # Connection string for the PostgreSQL database hosted on Render
+      - DATABASE_URL=postgresql://sit722part4_5wil_user:oAzWDo67PUull6wC75TK38UBo17Np4dt@dpg-crnrcho8fa8c738jt4sg-a.oregon-postgres.render.com/sit722part4_5wil
+      # Restart policy for the container: 'no' means it will not automatically restart
+    restart: "no"

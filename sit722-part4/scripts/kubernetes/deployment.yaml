@@ -1,0 +1,79 @@
+# Define a deployment for the book catalog service
+apiVersion: apps/v1  # Use the apps/v1 API version for the deployment resource
+kind: Deployment  # This defines the resource type, in this case, a Deployment
+metadata:
+  name: book-catalog-deployment  # Name of the deployment
+spec:
+  replicas: 1  # Number of pod replicas to run (only one pod for now)
+  selector:
+    matchLabels:
+      app: book-catalog  # The label used to match pods with this deployment
+  template:
+    metadata:
+      labels:
+        app: book-catalog  # Labels that will be assigned to the pod created by this deployment
+    spec:
+      containers: 
+      - name: book-catalog  # Name of the container within the pod
+        image: sit722part4.azurecr.io/book_catalog:latest  # Docker image to use for this container
+        imagePullPolicy: IfNotPresent  # Pull the image only if it's not present locally
+        ports:
+        - containerPort: 8001  # Expose port 8001 inside the container
+        env:  # Define environment variables for the container
+        - name: PORT  # Environment variable for the service's port
+          value: "8001"  # Port the service listens on
+        - name: DATABASE_URL  # Environment variable for the database connection string
+          value: postgresql://sit722part4_5wil_user:oAzWDo67PUull6wC75TK38UBo17Np4dt@dpg-crnrcho8fa8c738jt4sg-a.oregon-postgres.render.com/sit722part4_5wil  # PostgreSQL connection string for the database
+---
+# Define a service for the book catalog deployment
+apiVersion: v1  # Use the core/v1 API for the Service resource
+kind: Service  # This defines the resource type, in this case, a Service
+metadata:
+  name: book-catalog-service  # Name of the service
+spec:
+  selector:
+    app: book-catalog  # The service will route traffic to pods with the 'app: book-catalog' label
+  type: LoadBalancer  # Type of service to expose the application to the internet via a cloud provider’s load balancer
+  ports:
+    - port: 8001  # Port the service will listen on
+      targetPort: 8001  # Port that the service will forward requests to inside the container
+---
+# Define a deployment for the inventory management service
+apiVersion: apps/v1  # Use the apps/v1 API version for the deployment resource
+kind: Deployment  # This defines the resource type, in this case, a Deployment
+metadata:
+  name: inventory-management-deployment  # Name of the deployment
+spec:
+  replicas: 1  # Number of pod replicas to run (only one pod for now)
+  selector:
+    matchLabels:
+      app: inventory-management  # The label used to match pods with this deployment
+  template:
+    metadata:
+      labels:
+        app: inventory-management  # Labels that will be assigned to the pod created by this deployment
+    spec:
+      containers: 
+      - name: inventory-management  # Name of the container within the pod
+        image: sit722part4.azurecr.io/inventory_management:latest  # Docker image to use for this container
+        imagePullPolicy: IfNotPresent  # Pull the image only if it's not present locally
+        ports:
+        - containerPort: 8002  # Expose port 8002 inside the container
+        env:  # Define environment variables for the container
+        - name: PORT  # Environment variable for the service's port
+          value: "8002"  # Port the service listens on
+        - name: DATABASE_URL  # Environment variable for the database connection string
+          value: postgresql://sit722part4_5wil_user:oAzWDo67PUull6wC75TK38UBo17Np4dt@dpg-crnrcho8fa8c738jt4sg-a.oregon-postgres.render.com/sit722part4_5wil  # PostgreSQL connection string for the database
+---
+# Define a service for the inventory management deployment
+apiVersion: v1  # Use the core/v1 API for the Service resource
+kind: Service  # This defines the resource type, in this case, a Service
+metadata:
+  name: inventory-management-service  # Name of the service
+spec:
+  selector:
+    app: inventory-management  # The service will route traffic to pods with the 'app: inventory-management' label
+  type: LoadBalancer  # Type of service to expose the application to the internet via a cloud provider’s load balancer
+  ports:
+    - port: 8002  # Port the service will listen on
+      targetPort: 8002  # Port that the service will forward requests to inside the container
