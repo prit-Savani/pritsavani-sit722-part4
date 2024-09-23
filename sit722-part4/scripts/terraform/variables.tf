@@ -1,6 +1,6 @@
 # Define a variable for the application name
 variable "app_name" {
-  default = "manishprojectpart4"  # The default value for the app name is "manishprojectpart4"
+  default = "pritprojectpart4"  # The default value for the app name is "manishprojectpart4"
 }
 
 # Define a variable for the Azure location (region) where resources will be deployed
