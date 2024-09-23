@@ -15,4 +15,5 @@ terraform {
 # Configure the AzureRM provider to interact with Azure
 provider "azurerm" {
   features {}  # A placeholder for enabling certain provider-specific features (required, even if empty)
+  skip_provider_registration = true
 }
